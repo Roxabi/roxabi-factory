@@ -97,7 +97,7 @@ class TestBlobStoreProtocol:
         Protocol contract is non-None on hit / None on miss only. The returned
         BlobRef's content_hash is backend-specific: FsBlobStore returns the full
         sha256; HttpBlobStore returns a sentinel with ``content_hash=""`` because
-        HEAD has no body (see CLAUDE.md §HttpBlobStore, #1367).
+        HEAD has no body (see AGENTS.md §HttpBlobStore, #1367).
         """
         # Arrange
         payload = b"exists check"
@@ -116,7 +116,7 @@ class TestBlobStoreProtocol:
         argument for FsBlobStore (which looks up by content_hash). For
         HttpBlobStore the argument is structurally a store_key — the server-side
         HEAD handler does dual lookup (store_path then content_hash fallback,
-        see src/factory/blobstore/CLAUDE.md §HEAD handler dual lookup), so the call
+        see src/factory/blobstore/AGENTS.md §HEAD handler dual lookup), so the call
         succeeds pre-delete and fails post-delete on both backends.
         """
         # Arrange

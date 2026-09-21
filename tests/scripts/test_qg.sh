@@ -102,8 +102,8 @@ WORK="$(mktemp -d)"
 cleanup() { rm -rf "$WORK" ${WORK2:+"$WORK2"} ${WORK3:+"$WORK3"} ${WORK4:+"$WORK4"}; }
 trap cleanup EXIT
 
-mkdir -p "$WORK/.claude"
-cat >"$WORK/.claude/stack.yml" <<'EOF'
+mkdir -p "$WORK/.dev"
+cat >"$WORK/.dev/stack.yml" <<'EOF'
 quality_gates:
   gate_fail:
     enabled: true
@@ -122,7 +122,7 @@ EOF
 
 set +e
 output="$(
-  QG_REPO_ROOT="$WORK" QG_STACK="$WORK/.claude/stack.yml" \
+  QG_REPO_ROOT="$WORK" QG_STACK="$WORK/.dev/stack.yml" \
     "$QG" run --stage ci 2>&1
 )"
 rc=$?
@@ -153,8 +153,8 @@ fi
 # C. Invalid files regex — temp fixture
 # ---------------------------------------------------------------------------
 WORK2="$(mktemp -d)"
-mkdir -p "$WORK2/.claude"
-cat >"$WORK2/.claude/stack.yml" <<'EOF'
+mkdir -p "$WORK2/.dev"
+cat >"$WORK2/.dev/stack.yml" <<'EOF'
 quality_gates:
   bad_regex:
     enabled: true
@@ -180,7 +180,7 @@ git -C "$WORK2" add file.txt
 
 set +e
 regex_out="$(
-  QG_REPO_ROOT="$WORK2" QG_STACK="$WORK2/.claude/stack.yml" \
+  QG_REPO_ROOT="$WORK2" QG_STACK="$WORK2/.dev/stack.yml" \
     "$QG" run --stage pre-commit 2>&1
 )"
 regex_rc=$?
@@ -197,7 +197,7 @@ rm -rf "$WORK2"
 # ---------------------------------------------------------------------------
 # D. run_order must include every gate listed in quality_gates.stages
 # ---------------------------------------------------------------------------
-STACK_FILE="${REPO_ROOT}/.claude/stack.yml"
+STACK_FILE="${REPO_ROOT}/.dev/stack.yml"
 missing=0
 while IFS=$'\t' read -r gate stage; do
   [[ -n "$gate" && -n "$stage" ]] || continue
@@ -224,8 +224,8 @@ fi
 # E. CI files: filtering via QG_DIFF_RANGE — temp fixture git repo
 # ---------------------------------------------------------------------------
 WORK3="$(mktemp -d)"
-mkdir -p "$WORK3/.claude"
-cat >"$WORK3/.claude/stack.yml" <<'EOF'
+mkdir -p "$WORK3/.dev"
+cat >"$WORK3/.dev/stack.yml" <<'EOF'
 quality_gates:
   filtered_gate:
     enabled: true
@@ -271,12 +271,12 @@ run_ci_fixture() {
   set +e
   if [[ "$range" == "--unset" ]]; then
     ci_out="$(
-      env -u QG_DIFF_RANGE QG_REPO_ROOT="$WORK3" QG_STACK="$WORK3/.claude/stack.yml" \
+      env -u QG_DIFF_RANGE QG_REPO_ROOT="$WORK3" QG_STACK="$WORK3/.dev/stack.yml" \
         "$QG" run --stage ci 2>&1
     )"
   else
     ci_out="$(
-      QG_REPO_ROOT="$WORK3" QG_STACK="$WORK3/.claude/stack.yml" QG_DIFF_RANGE="$range" \
+      QG_REPO_ROOT="$WORK3" QG_STACK="$WORK3/.dev/stack.yml" QG_DIFF_RANGE="$range" \
         "$QG" run --stage ci 2>&1
     )"
   fi
@@ -380,7 +380,7 @@ echo staged >>"$WORK3/nomatch.txt"
 git -C "$WORK3" add nomatch.txt
 set +e
 pc_out="$(
-  QG_REPO_ROOT="$WORK3" QG_STACK="$WORK3/.claude/stack.yml" QG_DIFF_RANGE="${BASE_SHA}...HEAD" \
+  QG_REPO_ROOT="$WORK3" QG_STACK="$WORK3/.dev/stack.yml" QG_DIFF_RANGE="${BASE_SHA}...HEAD" \
     "$QG" run --stage pre-commit 2>&1
 )"
 pc_rc=$?
@@ -438,8 +438,8 @@ fi
 # ---------------------------------------------------------------------------
 WORK4="$(mktemp -d)"
 
-mkdir -p "$WORK4/.claude"
-cat >"$WORK4/.claude/stack.yml" <<'EOF'
+mkdir -p "$WORK4/.dev"
+cat >"$WORK4/.dev/stack.yml" <<'EOF'
 quality_gates:
   typecheck:
     enabled: true
@@ -456,7 +456,7 @@ quality_gates:
 qg:
   change_classes:
     docs:
-      paths: ^(docs/|artifacts/)|AGENTS\.md$|\.md$|^\.claude/
+      paths: ^(docs/|artifacts/)|AGENTS\.md$|\.md$|^\.claude/|^\.dev/
     python:
       paths: ^(src/|packages/[^/]+/src/|tests/|pyproject\.toml$|uv\.lock$)
   tripwires:
@@ -485,12 +485,12 @@ run_plan_fixture() {
   set +e
   if [[ "$range" == "--unset" ]]; then
     plan_out="$(
-      env -u QG_DIFF_RANGE QG_REPO_ROOT="$WORK4" QG_STACK="$WORK4/.claude/stack.yml" \
+      env -u QG_DIFF_RANGE QG_REPO_ROOT="$WORK4" QG_STACK="$WORK4/.dev/stack.yml" \
         "$QG" plan --stage ci --format json 2>&1
     )"
   else
     plan_out="$(
-      QG_REPO_ROOT="$WORK4" QG_STACK="$WORK4/.claude/stack.yml" QG_DIFF_RANGE="$range" \
+      QG_REPO_ROOT="$WORK4" QG_STACK="$WORK4/.dev/stack.yml" QG_DIFF_RANGE="$range" \
         "$QG" plan --stage ci --format json 2>&1
     )"
   fi

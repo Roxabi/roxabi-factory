@@ -26,7 +26,7 @@ exists for callers that import via this module.
 
 Why no __init__ or _register_routes:
   - OutboundAdapterBase intentionally has no __init__ (see _base_outbound.py
-    header and CLAUDE.md: "OutboundAdapterBase has NO __init__") to preserve
+    header and AGENTS.md: "OutboundAdapterBase has NO __init__") to preserve
     cooperative MRO with discord.Client.
   - _register_routes is not a cross-platform concern — Telegram uses FastAPI
     routes; Discord uses gateway events; future platforms may use neither.

@@ -11,7 +11,7 @@
 # Markers with an issue ref are never expired here — use the audit report for
 # those.
 #
-# Exit-code contract (consistent with gate scripts in this repo — tools/CLAUDE.md):
+# Exit-code contract (consistent with gate scripts in this repo — tools/AGENTS.md):
 #   0 = no stale markers found
 #   1 = stale markers detected (merge-blocking)
 #   2 = script error (missing dep / corrupt git state)

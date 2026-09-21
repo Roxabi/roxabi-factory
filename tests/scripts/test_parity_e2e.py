@@ -57,7 +57,7 @@ NATS_PY_AVAILABLE: bool = _nats_py_available
 # pyproject.toml), not an optional one.
 #
 # Keyed on GITHUB_ACTIONS rather than the generic CI precedent used by
-# tests/integration/test_voice_routing.py: .claude/stack.yml's pytest_smoke
+# tests/integration/test_voice_routing.py: .dev/stack.yml's pytest_smoke
 # pre-push gate imports this module locally (to inspect markers) even though
 # none of its tests carry the `smoke` marker, so this guard also executes on
 # every local pre-push run. A dev shell that happens to export a generic

@@ -23,7 +23,7 @@ class BlobRef(BaseModel):
     Sentinel BlobRefs (`is_sentinel=True`) are sparse — only `store_key` is
     meaningful; `content_hash`, `size`, `mime`, etc. carry placeholder values.
     Produced by `HttpBlobStore.exists()` where HEAD has no body. See
-    `CLAUDE.md §HttpBlobStore.exists`.
+    `AGENTS.md §HttpBlobStore.exists`.
     """
 
     model_config = ConfigDict(extra="ignore", frozen=True)

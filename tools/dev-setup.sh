@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bootstrap local dev after clone — SSOT command: .claude/stack.yml → commands.dev_setup
+# Bootstrap local dev after clone — SSOT command: .dev/stack.yml → commands.dev_setup
 set -euo pipefail
 
 YQ_VERSION="${YQ_VERSION:-4.44.6}"

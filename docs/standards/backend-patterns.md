@@ -7,7 +7,7 @@ description: Mandatory patterns for hub, adapters, LLM drivers, stores, and plug
 
 > Status: LIVING
 > Scope: `src/factory/` — core, adapters, llm, commands, infrastructure
-> Source: `docs/architecture/engineering-standards.md`, per-subpackage CLAUDE.md files
+> Source: `docs/architecture/engineering-standards.md`, per-subpackage AGENTS.md files
 
 ---
 

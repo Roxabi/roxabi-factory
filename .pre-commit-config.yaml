@@ -1,5 +1,5 @@
 # Git hooks: upstream hygiene + stack.yml quality gates via scripts/qg.
-# Gate list and order: .claude/stack.yml → qg.run_order
+# Gate list and order: .dev/stack.yml → qg.run_order
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v5.0.0

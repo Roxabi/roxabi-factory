@@ -11,7 +11,7 @@
 #   - The Volumes table claims a per-file bind for adapters but the quadlets mount
 #     the full factory-data.volume (the known drift this gate was written to catch).
 #
-# Exit-code contract (consistent with gate scripts in this repo — tools/CLAUDE.md):
+# Exit-code contract (consistent with gate scripts in this repo — tools/AGENTS.md):
 #   0 = no drift detected
 #   1 = drift detected (merge-blocking)
 #   2 = script error (missing file / parse failure)

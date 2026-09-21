@@ -303,7 +303,7 @@ class OmpWorker(NatsAdapterBase):
             # for Model B). Runs *outside* _dispatch guard in adapter_base; must
             # self-handle + publish sanitized error (ADR-073: only type(exc).__name__
             # via publish_job_error/_classify; full log local only).
-            # See module docstring, CLAUDE.md, axial review.
+            # See module docstring, AGENTS.md, axial review.
             log.exception("omp_worker: job_id=%s failed", job_id)
             await publish_job_error(
                 self._nc, job_id, exc, trace_id=trace_id

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """check_adr_archive_tables.py — ADR <-> domain-page "ADR archive" table coherence
 prover (issue #2221, analysis Appendix B "SC2"). Manual prover — NOT wired into
-scripts/qg / .claude/stack.yml; run by hand when auditing ADR/artifact coherence.
+scripts/qg / .dev/stack.yml; run by hand when auditing ADR/artifact coherence.
 
 Ground truth:
   - An ADR's *activity* is location-based: docs/architecture/adr/NNN-*.mdx is

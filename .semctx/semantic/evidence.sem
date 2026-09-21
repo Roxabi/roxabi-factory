@@ -7,6 +7,6 @@ evidence proof.factory.importlinter
   link: file:AGENTS.md
 
 evidence proof.factory.qg
-  statement: scripts/qg (and CI quality gates from .claude/stack.yml) run the declared static and test gates before merge.
+  statement: scripts/qg (and CI quality gates from .dev/stack.yml) run the declared static and test gates before merge.
   status: declared
   link: file:docs/architecture/engineering-standards.md

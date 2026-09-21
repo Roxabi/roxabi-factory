@@ -13,13 +13,13 @@ Canonical source: `roxabi-plugins/plugins/dev-core/tools/` — ¬edit project-si
 
 ## Wiring
 
-Gates are declared in `.claude/stack.yml` (`quality_gates` + `qg.run_order`) and executed by `scripts/qg` (bash) — no generated pre-commit/CI wiring. Index: `docs/runbooks/quality-gates.md`.
+Gates are declared in `.dev/stack.yml` (`quality_gates` + `qg.run_order`) and executed by `scripts/qg` (bash) — no generated pre-commit/CI wiring. Index: `docs/runbooks/quality-gates.md`.
 
 `tools/qg.conf` is generated from `stack.yml` file-length settings; drift-gated by `scripts/check-qg-conf-drift.sh`. Fix via `/release-setup --force`.
 
 ### `check_doc_semantic_drift.py` — living-doc patterns (Phase C)
 
-Regex gate for operator-facing stale text that `check_doc_drift.py` misses: renamed CLI/Makefile targets (`make lyra`, `lyra config`, `~/.lyra`), wrong container counts, README licence vs `pyproject.toml`, and **tombstones** (#2220) — strings naming a removed command/symbol/script (`make deploy` #1930, `meta.json` ADR-index, `CredentialStore` #1057, `FACTORY_VAULT_DIR`, `systemctl reload nats`). Scans `README.md`, root `AGENTS.md` (#2196 de-count is gated here), `docs/**` (excl. `docs/history/**`, `docs/architecture/adr/**`), `deploy/CLAUDE.md`. Per-line exempt: `<!-- semantic-ignore -->`, historical keywords (`deleted`/`removed`/`retired`/…).
+Regex gate for operator-facing stale text that `check_doc_drift.py` misses: renamed CLI/Makefile targets (`make lyra`, `lyra config`, `~/.lyra`), wrong container counts, README licence vs `pyproject.toml`, and **tombstones** (#2220) — strings naming a removed command/symbol/script (`make deploy` #1930, `meta.json` ADR-index, `CredentialStore` #1057, `FACTORY_VAULT_DIR`, `systemctl reload nats`). Scans `README.md`, root `AGENTS.md` (#2196 de-count is gated here), `docs/**` (excl. `docs/history/**`, `docs/architecture/adr/**`), `deploy/AGENTS.md`. Per-line exempt: `<!-- semantic-ignore -->`, historical keywords (`deleted`/`removed`/`retired`/…).
 
 New tombstone → add a `Rule`, **but only for a string verified dead against the live tree** — a pattern for a still-live symbol fires on correct docs forever. The audit's `bot_secrets` and `keyring.key` were rejected on that basis (both live: `bot_secrets` table in `bootstrap_store_migrations.py`; `keyring.key` mounted by `deploy/quadlet/factory-data.volume`). `gen-nkeys.sh` is dead (→ `scripts/gen_nkeys.py`/`factory-acl`) but deferred until its ~25 live doc refs are retargeted (see the inline NOTE in the script).
 
@@ -76,7 +76,7 @@ Read tools tolerate false positives; write tools must not mutate test/fixture fi
 
 ## One-off analyses vs persistent gates
 
-Persistent gates are enumerated in `.claude/stack.yml` `quality_gates`. One-off analysis scripts (`audit_quality_debt.py`, `classify_quality_debt.py`, `capture_v1_text_baseline.py`, `license_check.py`) always exit 0 — they are reporters, not gates. Run `ls tools/*.py tools/*.sh` for the full listing.
+Persistent gates are enumerated in `.dev/stack.yml` `quality_gates`. One-off analysis scripts (`audit_quality_debt.py`, `classify_quality_debt.py`, `capture_v1_text_baseline.py`, `license_check.py`) always exit 0 — they are reporters, not gates. Run `ls tools/*.py tools/*.sh` for the full listing.
 
 `archive_artifacts_wave.py` is neither a gate nor a reporter — it is a manual/monthly **maintenance mutation** tool (policy: `artifacts/README.md`). It moves closed-issue `artifacts/` deltas to `artifacts/archive/YYYY-MM/` and, unlike the read-only scanners above, its exit code IS load-bearing: `0` clean, `1` a link would be stranded, `2` tool error. Its `--apply` rewrite pass deliberately does **not** exclude `tests/`/`packages/` (contrast the #1162 rule) — it locates references **by artifact basename** and resolves each per referring file (repo-root `artifacts/<cat>/<name>`, relative sibling `../<cat>/<name>`, or same-dir bare name), so a hit anywhere is a genuine reference that must move too, or the 0-broken-links bar fails.
 

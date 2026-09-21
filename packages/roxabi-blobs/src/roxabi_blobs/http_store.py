@@ -157,7 +157,7 @@ class HttpBlobStore:
         """HEAD /blobs/{content_hash}; returns sentinel BlobRef or None.
 
         Over HTTP the argument is treated as a store_key (wire path), NOT a
-        content_hash as in FsBlobStore.exists — see CLAUDE.md §HttpBlobStore.
+        content_hash as in FsBlobStore.exists — see AGENTS.md §HttpBlobStore.
 
         Returns a **sentinel BlobRef** (``is_sentinel=True``,
         ``content_hash=""``) on hit. The sentinel carries no metadata beyond

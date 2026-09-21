@@ -33,4 +33,4 @@ git diff origin/staging..HEAD -- '*.py' | grep '^+' | grep -c 'sleep('
 
 ## Integration Status
 
-This checklist is referenced from `CLAUDE.md` TL;DR. Automated invocation from the `/dev` SKILL.md cleanup step (in `roxabi-plugins`) is **pending** — tracked as a follow-up cross-repo change. Until wired, the checklist must be run manually before worktree cleanup.
+This checklist is referenced from `AGENTS.md` TL;DR. Automated invocation from the `/dev` SKILL.md cleanup step (in `roxabi-plugins`) is **pending** — tracked as a follow-up cross-repo change. Until wired, the checklist must be run manually before worktree cleanup.

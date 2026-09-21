@@ -10,7 +10,7 @@
 # date they accumulate silently and become stale. The 6-month horizon forces a
 # periodic review (either resolve the debt or push the date with a new rationale).
 #
-# Exit-code contract (consistent with all gate scripts in this repo — tools/CLAUDE.md):
+# Exit-code contract (consistent with all gate scripts in this repo — tools/AGENTS.md):
 #   0 = clean (all entries have a valid, non-expired date)
 #   1 = violations found (missing or expired date — merge-blocking)
 #   2 = script error (missing file, bad environment, etc.)

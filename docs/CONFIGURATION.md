@@ -487,7 +487,7 @@ Variables written by install.sh:
 
 | Variable | Source | Notes |
 |----------|--------|-------|
-| `TAILSCALE_IPV4` | `tailscale ip -4 \| head -1` at bootstrap | Empty string if Tailscale is absent at install time — the unit's ExecStartPre guard rejects start when unset (fail-closed; see `deploy/CLAUDE.md §Known residual risk`) |
+| `TAILSCALE_IPV4` | `tailscale ip -4 \| head -1` at bootstrap | Empty string if Tailscale is absent at install time — the unit's ExecStartPre guard rejects start when unset (fail-closed; see `deploy/AGENTS.md §Known residual risk`) |
 | `NATS_URL` | Omitted from the file | Supplied exclusively by the unit's inline `Environment=NATS_URL=nats://factory-nats:4222`; omitting it from the env file prevents an empty value in systemd scope from shadowing the inline directive |
 
 File permissions: `0600` (set atomically via `umask 0077` subshell in install.sh).

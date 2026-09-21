@@ -1,7 +1,7 @@
 # AGENTS.md — factory (roxabi-factory)
 
 Let:
-  A := ~/.roxabi/factory/auth.db (grants, identity only) | C := ~/.roxabi/factory/config.db (agents, bots, prefs) | T := TOML seed | P := CLAUDE.md path (shim → `@AGENTS.md`)
+  A := ~/.roxabi/factory/auth.db (grants, identity only) | C := ~/.roxabi/factory/config.db (agents, bots, prefs) | T := TOML seed
 
 ## Project
 
@@ -79,13 +79,13 @@ Search: `~/.roxabi/factory/agents/` (override) → `src/factory/agents/` (defaul
 
 ## Agent instructions hygiene
 
-Content lives in `AGENTS.md` (Cursor + agents). `CLAUDE.md` is a thin shim (`@AGENTS.md` + Claude Code `@` imports at root only).
+Content lives in `AGENTS.md` — one per subsystem, read by every harness (Claude, Cursor, Grok).
 
-File/rename → update `AGENTS.md` + shim `CLAUDE.md` + registry immediately.
+File/rename → update `AGENTS.md` + registry immediately.
 
-→ `docs/claude-md-registry.md` — full P→scope table (the SSoT; one row per shim). Update there on add/rename/delete.
+→ `docs/claude-md-registry.md` — full path→scope table (the SSoT; one row per `AGENTS.md`). Update there on add/rename/delete.
 
-Rules: add/delete/move → update `AGENTS.md` + `CLAUDE.md` shim + register | new subdir with non-obvious invariants → add both + register | "invariants, not inventory" (¬file counts, ¬method dumps — let `ls`/`grep` answer that) | ¬`ADR-NNN` as operational rule — point to domain page (L1); gated by `agents_no_adr_refs`
+Rules: add/delete/move → update `AGENTS.md` + register | new subdir with non-obvious invariants → add both + register | "invariants, not inventory" (¬file counts, ¬method dumps — let `ls`/`grep` answer that) | ¬`ADR-NNN` as operational rule — point to domain page (L1); gated by `agents_no_adr_refs`
 
 ## Production entry points
 

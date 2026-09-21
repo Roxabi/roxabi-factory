@@ -74,7 +74,7 @@ uv run pyright           # type check — must pass
 uv run pytest            # tests — must pass
 ```
 
-**Dashboard / JS-TS** (`apps/`, `packages/`, `brand/` — see `.claude/stack.yml` → `frontend`)
+**Dashboard / JS-TS** (`apps/`, `packages/`, `brand/` — see `.dev/stack.yml` → `frontend`)
 
 ```bash
 bun run lint             # biome check — must pass (CI + pre-commit hook)

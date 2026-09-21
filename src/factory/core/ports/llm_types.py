@@ -57,7 +57,7 @@ class ModelConfig(BaseModel):
     cwd:     working directory for the Claude subprocess (claude-cli only).
              None → defaults to the factory project root.
              Useful to point a dedicated agent at another project so it reads
-             that project's CLAUDE.md and has access to its files.
+             that project's AGENTS.md and has access to its files.
     This will evolve into an intelligent model selection system.
     """
 

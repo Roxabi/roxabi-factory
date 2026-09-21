@@ -60,7 +60,7 @@
 #   Do NOT change the parse logic here without a matching change in
 #   tools/emit_secrets_manifest.py.
 #
-# EXIT-CODE CONTRACT (tools/CLAUDE.md):
+# EXIT-CODE CONTRACT (tools/AGENTS.md):
 #   0 = ran cleanly, no violations
 #   1 = one or more violations found (merge-blocking)
 #   2 = script setup error (missing dep / missing required file)

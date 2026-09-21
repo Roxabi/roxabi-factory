@@ -1,4 +1,4 @@
-# File size exemptions — file_length gate (metric: SLOC, cap 300, per .claude/stack.yml)
+# File size exemptions — file_length gate (metric: SLOC, cap 300, per .dev/stack.yml)
 # Each entry MUST have a tracking issue. Format: <path>  # <N> lines — <issue> <description>
 # The declared count is a local cap (still measured in SLOC); exceeding it fails the gate.
 # Currently EMPTY: under SLOC@300 no src file qualifies (max ~291 SLOC).

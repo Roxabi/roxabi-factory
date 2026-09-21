@@ -42,7 +42,7 @@ Secret=factory-claude-oauth,type=env,target=CLAUDE_CODE_OAUTH_TOKEN
 # the container holds a Links:0 ghost and never sees the refreshed token.
 Volume=%h/.claude:/home/factory/.claude:z
 Volume=%h/.claude.json:/home/factory/.claude.json:z
-# Workspace — mirrors host ~/projects so claude subprocess picks up per-project CLAUDE.md
+# Workspace — mirrors host ~/projects so claude subprocess picks up per-project AGENTS.md
 Volume=%h/projects:/home/factory/projects:z
 Environment=FACTORY_CLAUDE_CWD=/home/factory/projects
 # Quadlet does not honor systemd's `-` prefix (silent-if-missing) on

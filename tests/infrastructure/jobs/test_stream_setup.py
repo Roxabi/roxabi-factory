@@ -111,7 +111,7 @@ def test_stream_subjects_exclude_wildcard() -> None:
     """factory.jobs.> bare wildcard must NOT appear in SUBJECTS."""
     assert "factory.jobs.>" not in SUBJECTS, (
         "factory.jobs.> wildcard forbidden in WorkQueue SUBJECTS — "
-        "enumerate subjects explicitly (see CLAUDE.md invariants)."
+        "enumerate subjects explicitly (see AGENTS.md invariants)."
     )
 
 

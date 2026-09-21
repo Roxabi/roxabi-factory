@@ -27,7 +27,7 @@ documented path below is the production path on a single machine.
 ```bash
 git clone https://github.com/Roxabi/roxabi-factory
 cd roxabi-factory
-tools/dev-setup.sh          # uv sync + bun install + git hooks (SSoT: .claude/stack.yml commands.dev_setup)
+tools/dev-setup.sh          # uv sync + bun install + git hooks (SSoT: .dev/stack.yml commands.dev_setup)
 ```
 
 CLI commands below are shown as `uv run factory …`. To drop the `uv run` prefix,

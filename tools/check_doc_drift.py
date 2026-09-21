@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scan docs and CLAUDE.md files for dead backtick references.
+"""Scan docs and AGENTS.md files for dead backtick references.
 
 Checks src/... paths, module paths, NATS subjects, and CamelCase symbols
 against the codebase using a semantic AST-based oracle (CodeInventory).
@@ -70,8 +70,8 @@ def _default_baseline(root: Path) -> Path:
 # ---------------------------------------------------------------------------
 
 
-def _collect_claude_mds(root: Path, seen: set[Path], out: list[Path]) -> None:
-    """Append all non-hidden CLAUDE.md files under root's search dirs."""
+def _collect_agents_mds(root: Path, seen: set[Path], out: list[Path]) -> None:
+    """Append all non-hidden AGENTS.md files under root's search dirs."""
 
     def add(p: Path) -> None:
         if p not in seen and p.is_file():
@@ -81,7 +81,7 @@ def _collect_claude_mds(root: Path, seen: set[Path], out: list[Path]) -> None:
     for sr in (root, root / "src", root / "packages", root / "plugins"):
         if not sr.is_dir():
             continue
-        for cm in sorted(sr.rglob("CLAUDE.md")):
+        for cm in sorted(sr.rglob("AGENTS.md")):
             if any(p.startswith(".") for p in cm.relative_to(root).parts):
                 continue
             add(cm)
@@ -155,7 +155,7 @@ def _collect_scan_files(root: Path) -> list[Path]:
         for f in sorted(standards.rglob("*.md")):
             add(f)
     _collect_operational_docs(root, seen, out)
-    _collect_claude_mds(root, seen, out)
+    _collect_agents_mds(root, seen, out)
     return out
 
 
@@ -189,9 +189,9 @@ def _token_is_historical(token_start: int, line: str) -> bool:
 def _resolve_package_relative_path(root: Path, doc_path: Path, token: str) -> bool:
     """Return True if *token* is a package-relative path that exists.
 
-    When scanning ``packages/<pkg>/CLAUDE.md``, ``src/...`` tokens should be
+    When scanning ``packages/<pkg>/AGENTS.md``, ``src/...`` tokens should be
     resolved relative to ``packages/<pkg>/`` first, then repo root.  This
-    prevents false positives where a package CLAUDE.md references a path
+    prevents false positives where a package AGENTS.md references a path
     inside its own ``src/`` tree and the gate incorrectly tries repo-root
     ``src/`` first.
     """
@@ -268,7 +268,7 @@ def _scan_file(
             token = m.group(1)
             token_start = m.start()
 
-            # Package-relative path short-circuit for packages/*/CLAUDE.md
+            # Package-relative path short-circuit for packages/*/AGENTS.md
             if _resolve_package_relative_path(root, path, token):
                 continue
 
@@ -339,7 +339,7 @@ def main(argv: list[str] | None = None) -> int:
     """
     parser = argparse.ArgumentParser(
         description=(
-            "Scan docs and CLAUDE.md files for dead backtick references. "
+            "Scan docs and AGENTS.md files for dead backtick references. "
             "Exit 0 = clean. Exit 1 = new violations. Exit 2 = script error."
         )
     )
