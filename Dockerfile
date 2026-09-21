@@ -23,7 +23,7 @@ COPY deploy/quadlet/ deploy/quadlet/
 RUN uv sync --frozen --no-dev
 
 # ── Dashboard SPA builder (#1771) ───────────────────────────────────────────
-FROM oven/bun:1.3.14 AS dashboard-builder
+FROM oven/bun:latest AS dashboard-builder
 WORKDIR /app
 COPY package.json bun.lock biome.json ./
 COPY apps/dashboard-v2/package.json apps/dashboard-v2/

@@ -20,7 +20,7 @@
 #   src/factory/cli.py                    — `lyra config validate` CLI introspection only (¬boot path)
 #
 # Run locally: bash tools/check_no_runtime_toml_bots.sh
-# Run in CI:   quality gate (no_runtime_toml_bots in .claude/stack.yml)
+# Run in CI:   quality gate (no_runtime_toml_bots in .dev/stack.yml)
 
 set -euo pipefail
 

@@ -10,7 +10,7 @@ Contract:
   - --update-baseline warns when absorbing new (previously-unbaselined) violations.
   - <!-- drift-ignore --> on same line → exempt, exit 0.
   - Dead src/ path → exit 1.
-  - Dead ref in src/factory/*/CLAUDE.md → exit 1.
+  - Dead ref in src/factory/*/AGENTS.md → exit 1.
   - Internal error → exit 2.
 """
 
@@ -283,15 +283,15 @@ def test_adr_archive_is_not_scanned(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# T9 — dead ref in src/factory/*/CLAUDE.md → exit 1
+# T9 — dead ref in src/factory/*/AGENTS.md → exit 1
 # ---------------------------------------------------------------------------
 
 
-def test_dead_ref_in_claude_md_exits_1(tmp_path: Path) -> None:
-    """Dead backtick ref inside src/factory/adapters/CLAUDE.md is caught."""
+def test_dead_ref_in_agents_md_exits_1(tmp_path: Path) -> None:
+    """Dead backtick ref inside src/factory/adapters/AGENTS.md is caught."""
     _make_doc(
         tmp_path,
-        "src/factory/adapters/CLAUDE.md",
+        "src/factory/adapters/AGENTS.md",
         "See `ZzzGhostAdapter` for the old interface.\n",
     )
     rc = main(["--root", str(tmp_path)])

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Quality gate runner — reads .claude/stack.yml, executes gates (bash orchestration).
+# Quality gate runner — reads .dev/stack.yml, executes gates (bash orchestration).
 #
 # Usage:
 #   scripts/qg run --stage pre-commit
@@ -21,7 +21,7 @@ set -euo pipefail
 
 QG_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="${QG_REPO_ROOT:-$(cd "${QG_SCRIPT_DIR}/.." && pwd)}"
-STACK="${QG_STACK:-${REPO_ROOT}/.claude/stack.yml}"
+STACK="${QG_STACK:-${REPO_ROOT}/.dev/stack.yml}"
 
 # 1 only when a CI changed-files list was successfully computed (QG_DIFF_RANGE
 # set AND git diff succeeded). Distinguishes "diff empty" (filter normally:

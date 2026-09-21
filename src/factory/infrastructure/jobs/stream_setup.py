@@ -2,7 +2,7 @@
 
 Stream FACTORY_JOBS: WorkQueue retention, FILE storage.
 Subjects are explicitly enumerated — factory.jobs.omp intentionally excluded
-(core-NATS queue group, no bound consumer on this stream; see CLAUDE.md and
+(core-NATS queue group, no bound consumer on this stream; see AGENTS.md and
 ADR-088 §Context).
 
 MaxAge=7d, MaxMsgs=100_000, duplicate_window=120s.
@@ -31,7 +31,7 @@ STREAM_NAME = "FACTORY_JOBS"
 
 # Explicit enumeration — factory.jobs.omp intentionally excluded (core-NATS
 # queue group, no bound consumer benefit; factory.jobs.> wildcard forbidden —
-# see CLAUDE.md invariants).
+# see AGENTS.md invariants).
 SUBJECTS: list[str] = [
     "factory.jobs.vault.>",
     "factory.jobs.web-intel.>",

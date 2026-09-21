@@ -14,7 +14,7 @@
 #   - "# NATS delivery window" — waiting for NATS message propagation where
 #     an event-based alternative would require infrastructure changes.
 #
-# Exit-code contract (consistent with gate scripts in this repo — tools/CLAUDE.md):
+# Exit-code contract (consistent with gate scripts in this repo — tools/AGENTS.md):
 #   0 = no violations found
 #   1 = violations detected (merge-blocking)
 #   2 = script error (missing dep / corrupt git state)

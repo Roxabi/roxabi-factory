@@ -1,7 +1,10 @@
 {
   "enabledPlugins": {
+    "agent-browser@agent-browser": true,
     "dev-core@roxabi-marketplace": true,
     "compress@roxabi-marketplace": true,
+    "context7@context7-marketplace": true,
+    "semctx@semctx-stable": true,
     "roxabi-vault@roxabi-vault-marketplace": true,
     "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
@@ -27,6 +30,34 @@
         "source": "github",
         "repo": "anthropics/claude-plugins-official"
       }
+    },
+    "agent-browser": {
+      "source": {
+        "source": "github",
+        "repo": "vercel-labs/agent-browser"
+      },
+      "autoUpdate": true
+    },
+    "cocoindex-code": {
+      "source": {
+        "source": "github",
+        "repo": "cocoindex-io/cocoindex-code"
+      },
+      "autoUpdate": true
+    },
+    "context7-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "upstash/context7"
+      },
+      "autoUpdate": true
+    },
+    "semctx-stable": {
+      "source": {
+        "source": "github",
+        "repo": "hoklims/semctx"
+      },
+      "autoUpdate": true
     }
   }
 }

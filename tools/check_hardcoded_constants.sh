@@ -46,7 +46,7 @@
 # Example:
 #   NATS_MAX_PAYLOAD = 1024 * 1024  # const-ok: NATS protocol hard limit
 #
-# EXIT-CODE CONTRACT (consistent with all gate scripts — tools/CLAUDE.md)
+# EXIT-CODE CONTRACT (consistent with all gate scripts — tools/AGENTS.md)
 #   0 = clean (no new violations)
 #   1 = violations found (merge-blocking)
 #   2 = script error (missing dep / bad git state)

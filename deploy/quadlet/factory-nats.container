@@ -4,7 +4,7 @@ StartLimitIntervalSec=60
 StartLimitBurst=5
 
 [Container]
-# nats:2.10.29-alpine pinned by digest — ¬autoupdate, bump manually (deploy/CLAUDE.md)
+# nats:2.10.29-alpine pinned by digest — ¬autoupdate, bump manually (deploy/AGENTS.md)
 Image=docker.io/library/nats@sha256:b83efabe3e7def1e0a4a31ec6e078999bb17c80363f881df35edc70fcb6bb927
 ContainerName=factory-nats
 Network=roxabi.network

@@ -49,7 +49,7 @@ class CliStreamingParser:
 
     Implements the ``factory.streaming.Parser[str, LlmEvent]`` Protocol via
     ``feed`` (alias of ``parse_line``), ``finalize``, and ``is_done``.
-    Composed, not inherited — see streaming/CLAUDE.md §Protocol is structural.
+    Composed, not inherited — see streaming/AGENTS.md §Protocol is structural.
     """
 
     def __init__(self, pool_id: str) -> None:
@@ -110,7 +110,7 @@ class CliStreamingParser:
         """
         return dict(self._sm_tool_blocks.open_blocks)
 
-    # -- Parser[str, LlmEvent] Protocol aliases (see streaming/CLAUDE.md §Protocol)
+    # -- Parser[str, LlmEvent] Protocol aliases (see streaming/AGENTS.md §Protocol)
     # -- ``feed`` is the protocol name; ``parse_line`` is the legacy public API.
     # -- Both are kept for backward compatibility with existing callers.
 

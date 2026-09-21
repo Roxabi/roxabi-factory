@@ -1,4 +1,4 @@
-# .claude/stack.yml — dev-core stack configuration
+# .dev/stack.yml — dev-core stack configuration
 schema_version: "1.0"
 
 runtime: python
@@ -35,6 +35,7 @@ docs:
   framework: none
   path: docs
   format: md
+  agent_entry: AGENTS.md        # agent instruction entrypoint (read explicitly, never imported)
 
 commands:
   dev: uv run factory
@@ -350,7 +351,7 @@ quality_gates:
 qg:
   change_classes:
     docs:
-      paths: ^(docs/|artifacts/)|AGENTS\.md$|\.md$|^\.claude/
+      paths: ^(docs/|artifacts/)|AGENTS\.md$|\.md$|^\.claude/|^\.dev/
     python:
       paths: ^(src/|packages/[^/]+/src/|tests/|pyproject\.toml$|uv\.lock$)
     frontend:
@@ -358,13 +359,13 @@ qg:
     deploy:
       paths: ^(deploy/|docker/)
     tooling:
-      paths: ^(scripts/|\.github/|\.claude/stack\.yml$|tools/)
+      paths: ^(scripts/|\.github/|\.dev/stack\.yml$|tools/)
   tripwires:
     - ^pyproject\.toml$
     - ^uv\.lock$
     - ^package\.json$
     - ^bun\.lock$
-    - ^\.claude/stack\.yml$
+    - ^\.dev/stack\.yml$
     - ^\.github/workflows/ci\.yml$
     - ^scripts/qg$
   run_order:

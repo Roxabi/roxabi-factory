@@ -12,7 +12,7 @@ in ``core/hub/``, ``PipelineMiddleware`` in ``core/hub/middleware/``,
 ``PoolContext`` in ``core/pool/`` — are **role interfaces** (Fowler) co-located
 with their sub-domain. They are *not* driven ports and must NOT migrate here.
 
-See ``src/factory/core/CLAUDE.md`` for the full glossary and the future
+See ``src/factory/core/AGENTS.md`` for the full glossary and the future
 "orthodoxie pure" note (split ``ChannelAdapter`` into a driver inbound port
 and a driven outbound port).
 

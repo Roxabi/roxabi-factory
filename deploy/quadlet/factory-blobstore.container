@@ -56,7 +56,7 @@ Volume=%h/.roxabi/factory/config.toml:/app/config.toml:ro,z
 # back to 0.0.0.0:8449 (LAN-exposed). The ExecStartPre guard below prevents the container
 # from entering running state in that case, so no traffic is ever served (fail-closed).
 # Bearer token remains the sole auth boundary on a misconfigured host (guard circumvented).
-# Accepted for V8; document in deploy/CLAUDE.md §Residual risks.
+# Accepted for V8; document in deploy/AGENTS.md §Residual risks.
 PublishPort=${TAILSCALE_IPV4}:8449:8449
 Exec=factory blobstore serve --token-path /run/secrets/factory_blobstore_token --host 0.0.0.0 --port 8449
 HealthCmd=grep -q blobstore /proc/1/cmdline

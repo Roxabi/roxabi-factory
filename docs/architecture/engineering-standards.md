@@ -211,7 +211,7 @@ Layer-to-test-type mapping:
 
 ### CI quality gates
 
-Quality gates are **declared in `.claude/stack.yml`** and **run by `scripts/qg`** — a
+Quality gates are **declared in `.dev/stack.yml`** and **run by `scripts/qg`** — a
 bash + yq runner with no generated hook wiring:
 
 - The `quality_gates` map declares each gate: script, stages, an optional changed-files
@@ -259,7 +259,7 @@ one runner — adding a check means declaring a gate in `stack.yml` and adding i
 - Every guard ships with a negative test that fails when the guard is deleted — a merge
   blocker at code review.
 - Never mock the module under test; patch dependencies at their import site.
-- Quality gates run only if declared in `.claude/stack.yml` **and** listed in
+- Quality gates run only if declared in `.dev/stack.yml` **and** listed in
   `qg.run_order` for the stage; local pre-push green does not imply CI green (some gates
   are ci-only).
 

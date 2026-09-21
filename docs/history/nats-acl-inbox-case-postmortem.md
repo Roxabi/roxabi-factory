@@ -528,7 +528,7 @@ Four independent analyses were run after the initial postmortem: architect, prod
 
 #### Why-chain 4: Misconfigured ACL can ship without authorization correctness verification in CI
 
-1. No CI job validates ACL changes before merge. The `quality_gates` in `.claude/stack.yml` cover import layers, file length, and test uniqueness — not authorization config.
+1. No CI job validates ACL changes before merge. The `quality_gates` in `.dev/stack.yml` cover import layers, file length, and test uniqueness — not authorization config.
 2. `gen-nkeys.sh` runs `nats-server -t` for syntax validation only when the binary is present, which is not enforced in CI and validates syntax, not semantics.
 3. The first end-to-end test of ACL authorization correctness is when real services connect in production.
 4. Building a semantic verifier (spin up NATS, connect as each identity, assert allowed/denied subjects) was identified as Fix 3 and rated P0 in the postmortem. It does not yet exist.

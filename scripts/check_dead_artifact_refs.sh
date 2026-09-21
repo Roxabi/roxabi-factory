@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # check_dead_artifact_refs.sh — flag artifacts/... path references that no
 # longer resolve to a file in the repo tree (issue #2221, analysis Appendix B
-# "SC1"). Manual prover — NOT wired into `scripts/qg` / .claude/stack.yml;
+# "SC1"). Manual prover — NOT wired into `scripts/qg` / .dev/stack.yml;
 # run by hand when auditing ADR/artifact coherence.
 #
 # Scope: docs/ deploy/ scripts/ src/ packages/ tools/ tests/ .github/ README.md

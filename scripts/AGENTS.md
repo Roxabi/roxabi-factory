@@ -28,11 +28,11 @@ See `docs/runbooks/quality-gates.md` and `CONTRIBUTING.md` § Language & layout.
 
 ## Patterns (not an inventory)
 
-The authoritative gate list is `.claude/stack.yml` `quality_gates` (each `check-*`
+The authoritative gate list is `.dev/stack.yml` `quality_gates` (each `check-*`
 scanner here is referenced by a gate entry); `ls scripts/` is the file list. Rather
 than duplicate either, recognise the kinds:
 
-- **Orchestration (bash)** — `qg` (reads `.claude/stack.yml` via yq) and the
+- **Orchestration (bash)** — `qg` (reads `.dev/stack.yml` via yq) and the
   `check-*-drift.sh` guards (generated-artifact drift: qg.conf, ACL spec/authconf,
   theme build, astryx doctor). Pure bash, no parsing logic.
 - **Domain-ops scanners** — anything CI or the Makefile invokes directly gets a
@@ -46,4 +46,4 @@ than duplicate either, recognise the kinds:
   manually with intent, never wired as gates.
 
 Rule: new persistent scanner → `.sh` wrapper **iff** CI/Makefile invokes it directly,
-parsing in `.py`; declare the gate in `.claude/stack.yml`, not here.
+parsing in `.py`; declare the gate in `.dev/stack.yml`, not here.

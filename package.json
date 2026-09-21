@@ -6,7 +6,7 @@
     "apps/*",
     "packages/*"
   ],
-  "packageManager": "bun@1.3.14",
+  "packageManager": "bun@1.4.0",
   "scripts": {
     "dev:dashboard": "bun --filter @roxabi-factory/dashboard-v2 dev",
     "build:dashboard": "bun --filter @roxabi-factory/dashboard-v2 build",

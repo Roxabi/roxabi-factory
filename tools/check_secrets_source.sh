@@ -22,7 +22,7 @@
 #   POLICY_TOML        — default: deploy/secrets-policy.toml
 #   FACTORY_DATA_DIR   — default: $HOME/.roxabi/factory
 #
-# EXIT-CODE CONTRACT (tools/CLAUDE.md): 0 = clean, 1 = violations, 2 = setup error.
+# EXIT-CODE CONTRACT (tools/AGENTS.md): 0 = clean, 1 = violations, 2 = setup error.
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" \

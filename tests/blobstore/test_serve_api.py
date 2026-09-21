@@ -455,7 +455,7 @@ class TestErrorPaths:
         reason=(
             "V8 ships without a pre-read 413 gate — oversized blobs that exceed "
             "FsBlobStore's internal cap surface as BlobWriteError → 500. "
-            "Documented in src/factory/blobstore/CLAUDE.md §Oversized-blob handling."
+            "Documented in src/factory/blobstore/AGENTS.md §Oversized-blob handling."
         )
     )
     def test_put_oversized_blob_returns_413_per_s2_decision(

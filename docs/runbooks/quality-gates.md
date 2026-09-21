@@ -1,12 +1,12 @@
 # Quality Gates — Index
 
-Operator reference for automated checks. **Single source of truth:** `.claude/stack.yml` (`quality_gates` + `qg.run_order`).
+Operator reference for automated checks. **Single source of truth:** `.dev/stack.yml` (`quality_gates` + `qg.run_order`).
 
 **Runner:** `scripts/qg` (bash + [yq](https://github.com/mikefarah/yq)) — reads stack.yml at execution time (no generated wiring, no drift).
 
 **Layout:** gate implementations live in `tools/`; `scripts/` holds the runner and repo-specific scanners. See `CONTRIBUTING.md` § Language & layout.
 
-For script behaviour and exit codes, see [`tools/CLAUDE.md`](../../tools/CLAUDE.md).
+For script behaviour and exit codes, see [`tools/AGENTS.md`](../../tools/AGENTS.md).
 
 ---
 
@@ -14,7 +14,7 @@ For script behaviour and exit codes, see [`tools/CLAUDE.md`](../../tools/CLAUDE.
 
 | File | Role |
 |------|------|
-| `.claude/stack.yml` | Declares gates (`quality_gates`), stages, scripts, file filters, execution order (`qg.run_order`) |
+| `.dev/stack.yml` | Declares gates (`quality_gates`), stages, scripts, file filters, execution order (`qg.run_order`) |
 | `scripts/qg` | Executes gates for a stage, profile, or single gate name |
 | `.pre-commit-config.yaml` | Stable shell: upstream hooks + `qg run --stage pre-commit` / `pre-push` |
 | `.github/workflows/ci.yml` | CI bootstrap (uv, bun, yq) + `qg run --stage ci` + meta-tests, coverage, e2e |
@@ -120,9 +120,9 @@ ACL scanners (`acl_matrix_retired`, `request_reply_flows`, `acl_grants`, `inbox_
 
 ## Adding a gate
 
-1. Add `quality_gates.<name>` in `.claude/stack.yml` (`script`, `stages`, optional `files`, `env`, `requires`).
+1. Add `quality_gates.<name>` in `.dev/stack.yml` (`script`, `stages`, optional `files`, `env`, `requires`).
 2. Add `<name>` to `qg.run_order.<stage>` for **each** stage in `stages`.
 3. Regenerate `tools/qg.conf` via `/release-setup --force` if the gate uses file-length/folder shared config.
-4. Document non-obvious behaviour in `tools/CLAUDE.md`; add `tests/tools/` when logic is non-trivial.
+4. Document non-obvious behaviour in `tools/AGENTS.md`; add `tests/tools/` when logic is non-trivial.
 
 No pre-commit or ci.yml edit required for standard gates.

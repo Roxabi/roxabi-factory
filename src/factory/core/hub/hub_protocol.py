@@ -23,7 +23,7 @@ ISP debt
 In a fully orthodox hexagonal split this would become two ports
 (``MessageReceiver`` + ``MessageSender``) living under ``core/ports/inbound/``
 and ``core/ports/outbound/``. See the "orthodoxie pure" note in
-``src/factory/core/CLAUDE.md`` — tracked as future work, not blocking.
+``src/factory/core/AGENTS.md`` — tracked as future work, not blocking.
 """
 
 from __future__ import annotations

@@ -48,7 +48,7 @@ The single entry index (materializes ADR-086 § Retrieval ladder). The comprehen
 | What does a term mean / which sense? | grep the name in its owning domain page; homonyms (plane, event, axial) carry a "distinguish from" note | glossary · L1 |
 | What runs where / talks to whom? | [CURRENT.generated.md](architecture/CURRENT.generated.md) · `deploy/quadlet.toml` · `deploy/nats/acl-matrix.json` | topology · L0 |
 | Who **may** import whom / who **does**? | `.importlinter` (the rule) · CURRENT.generated.md layer map (the fact) | structure · L1/L0 |
-| What must always stay true here? | the owning domain page's **Key invariants** → follow to the enforcing gate in `.claude/stack.yml` | behavior · L1→gate |
+| What must always stay true here? | the owning domain page's **Key invariants** → follow to the enforcing gate in `.dev/stack.yml` | behavior · L1→gate |
 | What is the job/turn lifecycle or stream sequence? | [job-model.md](architecture/job-model.md) + [llm-streaming.md](architecture/llm-streaming.md) | dynamics · L1 |
 | What does my change endanger? | run the gates (`scripts/qg`) + the axial-review PR label; each invariant names its gate | delta · derived |
 | Where is the code for Y? | `ccc` (semantic) or grep (exact) — discovery, **no** normative doc home | — |

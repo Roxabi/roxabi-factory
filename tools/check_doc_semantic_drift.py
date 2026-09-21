@@ -190,7 +190,7 @@ def _collect_files(root: Path) -> list[Path]:
             out.append(p)
 
     add(root / "README.md")
-    add(root / "deploy" / "CLAUDE.md")
+    add(root / "deploy" / "AGENTS.md")
     # Root AGENTS.md (#2220): container-count / tombstone drift lands here too.
     # #2196 already de-counted it (points at deploy/quadlet.toml as SSoT); scanning
     # it keeps it that way.

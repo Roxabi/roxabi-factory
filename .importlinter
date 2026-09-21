@@ -136,7 +136,7 @@ allow_indirect_imports = true
 
 # NOTE: factory.blobstore is intentionally absent from source_modules below — it is a
 # peer-layer service (own systemd unit + NATS attach, ADR-073), not a shared floating
-# module. See src/factory/blobstore/CLAUDE.md "peer-of-adapters" placement.
+# module. See src/factory/blobstore/AGENTS.md "peer-of-adapters" placement.
 [importlinter:contract:shared-modules-upper-boundary]
 name = Shared floating modules and pipeline stages must not import bootstrap, adapters, or infrastructure (upper-boundary + stages-upper-boundary generalization; ADR-073 / engineering-standards)
 type = forbidden

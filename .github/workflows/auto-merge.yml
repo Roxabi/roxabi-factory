@@ -12,7 +12,7 @@
 # -PRs-on-every-staging-push) are retired: with strict up-to-date checks off,
 # that churn (67.7% of ALL CI runs pre-#2136) has no purpose.
 #
-# Project convention: merge commits only (¬squash) — see ~/projects/CLAUDE.md
+# Project convention: merge commits only (¬squash) — see ~/projects/ssot/conventions.ssot.md
 # "Release Convention". Squash merges flatten the per-commit history that
 # Conventional Commits + release-please rely on.
 #

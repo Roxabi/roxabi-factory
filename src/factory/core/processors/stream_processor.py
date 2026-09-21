@@ -157,7 +157,7 @@ class StreamProcessor:
 
         Uses the local ``EventEmitter`` only for ``emit_terminal``;
         ``flush``/``emit_ok`` are intentionally unused — events are yielded
-        directly. See ``streaming/CLAUDE.md`` §Ordering rule for the deferred
+        directly. See ``streaming/AGENTS.md`` §Ordering rule for the deferred
         narrowing rationale.
 
         Parameters
