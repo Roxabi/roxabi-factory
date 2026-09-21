@@ -59,7 +59,7 @@ The M₁ always-on cloud LLM gateway — **`factory-litellm`** (LiteLLM proxy :1
 **Boundary** — factory owns *deployment* (host placement, converge lifecycle, autoupdate wiring, secret wiring); Roxabi/llmCLI owns *code + image* (`ghcr.io/roxabi/llmcli`, built + published by its CI) and the **M₂ local GPU worker** (`llmcli-nats-worker` + engines, `host_roles=["llm-worker"]`, unchanged — deferred). The units are byte-vendored from llmCLI; M₁ gateway images track `:staging` via `io.containers.autoupdate=registry`.
 
 **Carve-outs from § Hardening invariants** (intentional — do not "normalize"):
-- `UserNS=keep-id:uid=1502,gid=1502` — the llmCLI image runs as uid 1502 (distinct from factory 1500 / voicecli 1501). The `NoNewPrivileges`/`ReadOnly`/`DropCapability=all` trio is present.
+- `UserNS=keep-id:uid=1502,gid=1502` — the llmCLI image runs as uid 1502 (distinct from factory 1500 / voicecli 1501). The `NoNewPrivileges`/`ReadOnly`/`DropCapability=all` trio is present. <!-- drift-ignore -->
 - The proxy master key is read from `~/.roxabi/llmcli/env/proxy.env` (grandfathered llmCLI data dir, `EnvironmentFile=`), **not** a `type=mount` secret — hence `required_secrets=[]`. Its value must equal `factory-litellm-key` (the bearer `factory-omp` sends); they are the same token today. Hardening to a `type=mount` `LLMCLI_API_KEY_FILE` secret needs an image change (follow-up).
 - xAI OAuth credentials live at `~/.roxabi/llmcli/credentials/` (rw bind-mount, per-host grant family — never a Podman secret, never Syncthing-synced, never copied between hosts).
 
@@ -142,7 +142,7 @@ Legacy 4-field stamps (pre-image-digest schema) are normalized to `:none:none` o
 
 **Image digest detection** — single helper, two call sites:
 
-- **`factory_canonical_image_digest`** (`deploy-common.sh`) — SSOT for fields 4–5 and post-autoupdate drift. Prefers the skopeo **index** digest when it appears in local `RepoDigests` (#1749); falls back to the first `RepoDigests` entry when skopeo is unavailable.
+- **`factory_canonical_image_digest`** (`deploy-common.sh`) — SSOT for fields 4–5 and post-autoupdate drift. Prefers the skopeo **index** digest when it appears in local `RepoDigests` (#1749); falls back to the first `RepoDigests` entry when skopeo is unavailable. <!-- drift-ignore -->
 - **`factory-post-autoupdate.sh`** — compares `factory_remote_index_digest` (3 retries) to `factory_canonical_image_digest`. On drift: `podman pull`, then `make converge` (does **not** delete the stamp).
 
 ### Convergence sequence
@@ -230,7 +230,7 @@ bash -c 'source deploy/lib/deploy-common.sh; _classify_drift "$(read_convergence
 
 ## Network exposure tiers
 
-Host `PublishPort` bind = the access boundary. Every service exposed beyond localhost
+Host `PublishPort` bind = the access boundary. Every service exposed beyond localhost <!-- drift-ignore -->
 carries its own auth — bind tier and auth mechanism are chosen **together**:
 
 | Service | Bind | Reachable | Auth boundary |
@@ -248,7 +248,7 @@ carries its own auth — bind tier and auth mechanism are chosen **together**:
 
 Rules:
 - **`0.0.0.0` (LAN + Tailnet) requires strong per-request auth** — only `factory-nats` (NKey) qualifies today. UFW base policy (`deploy/provision.sh`) denies inbound by default; the 4222 LAN-subnet rule is a manual host step (the old `deploy/nats/setup.sh` automation was removed as dead — #2041).
-- **No / weak app auth → bind `${TAILSCALE_IPV4}`** (Tailnet-only) + the fail-closed `ExecStartPre` guard; never `0.0.0.0`. Tailnet-IP bind needs no UFW rule (only the tailscale0 address accepts).
+- **No / weak app auth → bind `${TAILSCALE_IPV4}`** (Tailnet-only) + the fail-closed `ExecStartPre` guard; never `0.0.0.0`. Tailnet-IP bind needs no UFW rule (only the tailscale0 address accepts). <!-- drift-ignore -->
 - **Internal-only surfaces → `127.0.0.1`.**
 - New exposed unit → pick a row, pair it with an auth boundary, document it here.
 
@@ -294,7 +294,7 @@ by design. The guard is now the authoritative rejection point.
 ### factory-dashboard auth boundary (supersedes “no auth” wording)
 
 `factory-dashboard.container` binds PublishPort to `${TAILSCALE_IPV4}:8765:8765` (same pattern +
-fail-closed `ExecStartPre` guard as blobstore above). **Application auth is live:** protected
+fail-closed `ExecStartPre` guard as blobstore above). **Application auth is live:** protected <!-- drift-ignore -->
 BFF routes (including `/api/bff/jobs*`, sessions, agents, admin, pipeline) require
 `require_principal` (session cookie and/or Bearer API key / shared operator token). Hub RPC
 rehydrates principal from proof fields (session_token / api_key) — wire roles alone are not

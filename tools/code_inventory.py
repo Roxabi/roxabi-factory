@@ -2,7 +2,7 @@
 """Semantic oracle for codebase symbol/module/subject resolution.
 
 Provides CodeInventory.build() which performs a single AST-based pass over
-src/**/*.py and packages/*/src/**/*.py to collect:
+src/**/*.py, packages/*/src/**/*.py, and tools/**/*.py (names only) to collect:
   - modules: set of dotted module names (factory.core.hub, roxabi_nats.connect, …)
   - symbols: dict mapping bare name → set of defining module paths
   - subjects: frozenset of NATS subject literals and wildcard patterns
@@ -139,6 +139,10 @@ _EXTERNAL_KNOWN_NAMES: frozenset[str] = frozenset(
         # HTTP/ASGI transports
         "ASGITransport",
         "HTTPTransport",
+        # omp-rpc external class — defined in the omp_rpc package, not in this
+        # repo. Code uses it only as omp_rpc.RpcClient (attribute access, which
+        # the AST pass does not index). Confirmed: no class RpcClient under src/.
+        "RpcClient",
         # generic doc terms that are not project classes
         "RunError",
     ]
@@ -440,6 +444,40 @@ def _collect_subjects(root: Path) -> frozenset[str]:
         )
     return frozenset(all_subjects)
 
+def _index_tool_symbols(
+    root: Path,
+    symbols: dict[str, set[str]],
+    syntax_errors: list[tuple[Path, str]],
+) -> None:
+    """Record top-level names defined in tools/**/*.py.
+
+    Gate docs (tools/AGENTS.md) cite types that live in the gate scripts, not
+    in src/. Those names are real symbols; omitting tools/ made them look dead
+    (``Rule`` in check_doc_semantic_drift.py).
+
+    Indexed under ``tools.<stem>`` and NOT added to the module set: a tools
+    filename must not become a project module prefix, or an unrelated
+    ``<stem>.PascalCase`` doc token would resolve as a dead symbol.
+    """
+    tools_dir = root / "tools"
+    if not tools_dir.is_dir():
+        return
+    for py_file in sorted(tools_dir.rglob("*.py")):
+        rel = py_file.relative_to(tools_dir)
+        if any(part.startswith(".") or part == "__pycache__" for part in rel.parts):
+            continue
+        mod_name = "tools." + rel.with_suffix("").as_posix().replace("/", ".")
+        try:
+            source = py_file.read_text(encoding="utf-8", errors="replace")
+            tree = ast.parse(source, filename=str(py_file))
+        except SyntaxError as exc:
+            syntax_errors.append((py_file, str(exc)))
+            continue
+        for name in _collect_top_level_names(tree):
+            if not name:
+                continue
+            symbols.setdefault(name, set()).add(mod_name)
+
 
 # ---------------------------------------------------------------------------
 # CodeInventory
@@ -471,6 +509,8 @@ class CodeInventory:
 
     # ------------------------------------------------------------------ build
 
+
+
     @classmethod
     def build(cls, root: Path) -> "CodeInventory":
         """Build a CodeInventory in a single pass over root.
@@ -478,6 +518,7 @@ class CodeInventory:
         Scans:
           - src/**/*.py  (if src/ exists)
           - packages/*/src/**/*.py  (for each package under packages/)
+          - tools/**/*.py  (top-level names only; not registered as modules)
           - deploy/nats/acl-matrix.json  (NATS subject literals)
           - packages/roxabi-contracts/src/**/*.py  (NATS subject constants)
 
@@ -486,6 +527,7 @@ class CodeInventory:
         """
         src_roots = _discover_src_roots(root)
         modules, symbols, syntax_errors = _ast_pass(src_roots)
+        _index_tool_symbols(root, symbols, syntax_errors)
         subjects = _collect_subjects(root)
         return cls(
             root=root,
