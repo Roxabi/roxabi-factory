@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Aggregate CI job results for the required "ci" check context.
-# success and skipped are OK; failure and cancelled fail the aggregate.
-# See artifacts/specs/2249-ci-diff-scoped-plan-phase-0-1-spec.mdx (phase 0).
+# Only success is accepted. skipped/failure/cancelled fail closed so a
+# skipped needed job cannot turn the required `ci` check green.
 set -euo pipefail
 
 if [[ $# -eq 0 ]]; then
@@ -11,9 +10,9 @@ fi
 
 for result in "$@"; do
   case "$result" in
-    success | skipped) ;;
+    success) ;;
     *)
-      echo "::error::aggregate ci: needed job result '${result}' is not success or skipped" >&2
+      echo "::error::aggregate ci: needed job result '${result}' is not success" >&2
       exit 1
       ;;
   esac

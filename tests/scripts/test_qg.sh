@@ -13,7 +13,7 @@
 #      gates; pre-commit ignores QG_DIFF_RANGE (staged diff wins).
 #   F. dashboard_build.files stays byte-identical to dashboard_dist_assert.files
 #      in the real stack.yml (dist_assert is a guaranteed red if build skipped).
-#   G. ci-aggregate-results.sh accepts success/skipped, rejects failure/cancelled.
+#   G. ci-aggregate-results.sh accepts success only; rejects skipped/failure/cancelled.
 #   H. qg plan --stage ci — docs-only, tripwire, fail-open, typecheck skip (H1–H5).
 #
 # Usage: bash tests/scripts/test_qg.sh
@@ -415,10 +415,10 @@ else
   fail "aggregate all success" "expected 0, got $g_rc"
 fi
 
-if [[ "$g_skip_rc" -eq 0 ]]; then
-  pass "aggregate: success + skipped → exit 0"
+if [[ "$g_skip_rc" -eq 1 ]]; then
+  pass "aggregate: success + skipped → exit 1"
 else
-  fail "aggregate skipped" "expected 0, got $g_skip_rc"
+  fail "aggregate skipped" "expected 1, got $g_skip_rc"
 fi
 
 if [[ "$g_fail_rc" -eq 1 ]]; then

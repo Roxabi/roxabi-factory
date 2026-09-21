@@ -32,37 +32,6 @@ concurrency:
   cancel-in-progress: ${{ github.event_name != 'merge_group' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/staging' }}
 
 jobs:
-  # Processed PR / MQ merge → skip suite on push. Naked push → run suite.
-  # merge_group still runs the suite (classify is push-only).
-  # ~/projects/ssot/conventions.ssot.md § CI landing
-  classify:
-    name: Classify push
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    outputs:
-      path: ${{ steps.out.outputs.path }}
-    steps:
-      - id: out
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          SHA: ${{ github.sha }}
-        run: |
-          set -euo pipefail
-          path=naked
-          prs="$(gh api "repos/${REPO}/commits/${SHA}/pulls")"
-          n="$(printf '%s' "$prs" | jq --arg sha "$SHA" '[.[] | select(.merged == true and .merge_commit_sha == $sha)] | length')"
-          if [ "$n" -gt 0 ]; then
-            head="$(printf '%s' "$prs" | jq -r --arg sha "$SHA" '[.[] | select(.merged == true and .merge_commit_sha == $sha)][0].head.sha')"
-            conc="$(gh api --paginate "repos/${REPO}/commits/${head}/check-runs" --jq '[.check_runs[] | select((.name | ascii_downcase) == "ci") | .conclusion] | map(select(. == "success")) | if length > 0 then "success" else "missing" end')"
-            if [ "$conc" = "success" ]; then
-              path=pr-merge
-            fi
-          fi
-          echo "path=${path}" >> "$GITHUB_OUTPUT"
-          echo "landing path: ${path}"
-
   # 4-way split: gates / tests / infra / package-coverage run in parallel; the
   # aggregate `ci` job below keeps the required-check context stable. Infra
   # isolates live-nats + deploy-contract suites from the bulk unit/coverage job.
@@ -71,8 +40,7 @@ jobs:
   # acl_authconf_drift runs `factory-acl genkeys --template-only`, which
   # fabricates placeholder pubkeys without invoking nk.
   gates:
-    needs: [classify]
-    if: always() && !cancelled() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'push' || needs.classify.outputs.path == 'naked')
+    if: (github.event_name != 'pull_request' || !github.event.pull_request.draft)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -171,8 +139,7 @@ jobs:
   # Live-infra suites run in the `infra` job. Default-depth checkout: these
   # pytest suites stub git — only check_debt_expiry (gates job) needs full history.
   tests:
-    needs: [classify]
-    if: always() && !cancelled() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'push' || needs.classify.outputs.path == 'naked')
+    if: (github.event_name != 'pull_request' || !github.event.pull_request.draft)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -242,8 +209,7 @@ jobs:
   # In-process workspace packages only. roxabi-nats coverage runs in `infra`
   # (full suite needs nats-server for readiness/testing modules). No nats-server/nk/bun.
   package-coverage:
-    needs: [classify]
-    if: always() && !cancelled() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'push' || needs.classify.outputs.path == 'naked')
+    if: (github.event_name != 'pull_request' || !github.event.pull_request.draft)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -269,8 +235,7 @@ jobs:
   # Isolated from bulk unit/coverage so timing flakes don't block cov floors.
   # No --reruns — structural fixes, not retry masking.
   infra:
-    needs: [classify]
-    if: always() && !cancelled() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'push' || needs.classify.outputs.path == 'naked')
+    if: (github.event_name != 'pull_request' || !github.event.pull_request.draft)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -331,9 +296,7 @@ jobs:
   # failed needed job leaves this job skipped, and a skipped required check
   # deadlocks merges exactly like a missing one.
   ci:
-    needs: [classify, gates, tests, infra, package-coverage]
-    # Keep reporting on processed-PR push (skipped deps are OK) so publish.yml
-    # workflow_run still sees conclusion=success. merge_group: classify skipped.
+    needs: [gates, tests, infra, package-coverage]
     if: always() && !cancelled() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -345,7 +308,7 @@ jobs:
           RESULTS: ${{ join(needs.*.result, ' ') }}
         run: |
           echo "needed job results: ${RESULTS}"
-          # success and skipped are OK (skipped enables phase-2 conditional jobs).
+          # success only — skipped/failure/cancelled fail closed.
           scripts/ci-aggregate-results.sh ${RESULTS}
 
   # Self-contained (own checkout/uv sync/docker compose; no artifact from ci),
@@ -360,8 +323,7 @@ jobs:
     # duplicate compute (up to 5 concurrent queue builds).
     # WARNING: drop this `if:` if the job ever becomes a required check — a
     # skipped required check deadlocks the queue.
-    needs: [classify]
-    if: always() && !cancelled() && (github.event_name != 'merge_group') && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'push' || needs.classify.outputs.path == 'naked')
+    if: (github.event_name != 'merge_group') && (github.event_name != 'pull_request' || !github.event.pull_request.draft)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -406,14 +368,13 @@ jobs:
 
   docker-build:
     # Build-only gate: verifies the Dockerfile compiles on every PR.
-    # Runs in parallel with ci/integration (needs classify only).
+    # Runs in parallel with ci/integration.
     # Does NOT push. Uses CI-scoped GHA cache (factory-agent-ci / factory-svc-ci)
     # so it never pollutes the publish job's factory-agent / factory-svc scopes.
     # docker-build is a REQUIRED check (added post python:3.14 incident, where an
     # advisory red merged and broke staging publish) — it MUST run on merge_group:
     # a skipped required check deadlocks every queue entry (30-min timeout each).
-    needs: [classify]
-    if: always() && !cancelled() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'push' || needs.classify.outputs.path == 'naked')
+    if: (github.event_name != 'pull_request' || !github.event.pull_request.draft)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
