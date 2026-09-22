@@ -180,6 +180,20 @@ reportMissingTypeArgument = "none"
 [tool.ruff]
 src = ["src", "tests", "packages/roxabi-nats/src", "packages/roxabi-nats/tests", "packages/roxabi-contracts/src", "packages/roxabi-contracts/tests", "packages/roxabi-blobs/src", "packages/roxabi-blobs/tests", "packages/roxabi-satellite/src", "packages/roxabi-satellite/tests"]
 exclude = [".claude/worktrees", "deploy"]
+# Vendored gate scripts, copied from roxabi-plugins/plugins/dev-core/tools.
+# tools/ also holds host-owned gates, so the directory stays in scope — only
+# these four filenames are excluded. Formatting them rewrites upstream bytes
+# (or, for license_check.py, the declared local variant) and recreates the
+# drift ssot-verify V18 reports.
+extend-exclude = [
+    "tools/check_file_length.sh",
+    "tools/check_folder_size.sh",
+    "tools/check_lib.sh",
+    "tools/license_check.py",
+]
+# Explicit paths bypass exclude unless force-exclude is set; ruff check/format
+# on a staged or named file is inert without this.
+force-exclude = true
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "C901", "PLR0913", "PLR0915", "BLE001"]
