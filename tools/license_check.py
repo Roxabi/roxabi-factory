@@ -10,6 +10,11 @@ Usage:
   uv run tools/license_check.py --json
   uv run tools/license_check.py --policy .license-policy.json
   uv run tools/license_check.py --output reports/licenses.json
+  uv run tools/license_check.py --self-test
+
+--self-test proves the gate can fail: a fake pip-licenses on PATH reports a
+GPL package, the script must exit 1, and the work tree is never modified.
+Exits 0 only when that invocation exits 1.
 
 Exit code: 0 = compliant, 1 = violations found, 2 = tool error.
 
@@ -30,9 +35,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 # SPDX identifiers and common display names considered safe for commercial use.
@@ -121,6 +128,10 @@ def get_packages() -> list[dict]:
         sys.exit(2)
 
 
+# Local delta vs plugins/dev-core/tools/license_check.py.
+# Do not flatten on vendor sync: compound SPDX, PSF-2.0,
+# UNKNOWN bucket. --self-test grafted; policy logic kept.
+
 def _split_compound_spdx(license_str: str) -> list[str]:
     """Split compound SPDX expressions into individual identifiers.
 
@@ -147,6 +158,38 @@ def is_compliant(name: str, license_str: str, policy: dict) -> bool:
     return False
 
 
+def self_test() -> int:
+    """Prove the gate exits 1 on a disallowed license. Never touches the work tree."""
+    with tempfile.TemporaryDirectory(prefix="license-check-self-test-") as tmp:
+        fake = Path(tmp) / "pip-licenses"
+        fake.write_text(
+            "#!/bin/sh\n"
+            "printf '%s\\n' '"
+            "[{\"Name\":\"evil-gpl\",\"Version\":\"1.0.0\","
+            "\"License\":\"GPL-3.0-only\"}]'\n"
+        )
+        fake.chmod(0o755)
+        env = os.environ.copy()
+        env["PATH"] = f"{tmp}{os.pathsep}{env.get('PATH', '')}"
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve())],
+            env=env,
+            cwd=tmp,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 1:
+            print(
+                "ERROR: license_check --self-test: expected exit 1 "
+                f"on GPL-3.0-only, got {result.returncode}",
+                file=sys.stderr,
+            )
+            if result.stderr:
+                print(result.stderr, file=sys.stderr)
+            return 1
+    return 0
+
+
 def main() -> None:  # noqa: C901 — CLI entry point: argparse setup + sequential validation steps
     parser = argparse.ArgumentParser(description="License compliance checker")
     parser.add_argument(
@@ -165,7 +208,15 @@ def main() -> None:  # noqa: C901 — CLI entry point: argparse setup + sequenti
         default="",
         help="Write JSON report to file (e.g. reports/licenses.json)",
     )
+    parser.add_argument(
+        "--self-test",
+        action="store_true",
+        help="Prove the gate fails on a fabricated disallowed license (temp dir only)",
+    )
     args = parser.parse_args()
+
+    if args.self_test:
+        sys.exit(self_test())
 
     policy = load_policy(Path(args.policy))
     packages = get_packages()
